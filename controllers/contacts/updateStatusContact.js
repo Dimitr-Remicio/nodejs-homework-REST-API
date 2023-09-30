@@ -1,6 +1,7 @@
 const { basedir } = global;
-const { Contact, schemas } = require(`${basedir}/models/contact`);
-const { createError } = require(`${basedir}/helpers`);
+const { Contact, schemas } = require('../../models/contact');
+const { createError } = require('../../helpers');
+require("dotenv").config();
 
 const updateStatusContact = async (req, res, next) => {
   try {

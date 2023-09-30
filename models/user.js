@@ -1,59 +1,37 @@
-const { Schema, model } = require("mongoose");
-const Joi = require("joi");
+const mongoose = require("mongoose");
+const bCrypt = require("bcryptjs");
 
-const emailRegexp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+const Schema = mongoose.Schema;
 
-const userSchema = Schema(
-  {
-    password: {
-      type: String,
-      minlength: 6,
-      required: [true, "Password is required"],
-    },
-    email: {
-      type: String,
-      match: emailRegexp,
-      required: [true, "Email is required"],
-      unique: true,
-    },
-    subscription: {
-      type: String,
-      enum: ["starter", "pro", "business"],
-      default: "starter",
-    },
-    token: {
-      type: String,
-      default: null,
-    },
+const userSchema = new Schema({
+  username: {
+    type: String,
+    required: [true, "Username required"],
+    unique: true,
   },
-  { versionKey: false, timestamps: true }
-);
-
-const registerSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
-  subscription: Joi.string().valid("starter", "pro", "business"),
-  token: Joi.string(),
+  email: {
+    type: String,
+    required: [true, "Email required"],
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, "Password required"],
+  },
+  subscription: {
+    type: String,
+    enum: ["starter", "pro", "business"],
+    default: "starter",
+  },
 });
-
-const loginSchema = Joi.object({
-  email: Joi.string().pattern(emailRegexp).required(),
-  password: Joi.string().min(6).required(),
-});
-
-const updateSubscriptionSchema = Joi.object({
-  subscription: Joi.string().valid("starter", "pro", "business"),
-});
-
-const schemas = {
-  register: registerSchema,
-  login: loginSchema,
-  updateSubscription: updateSubscriptionSchema,
+userSchema.methods.setPassword = function (password) {
+  this.password = bCrypt.hashSync(password, bCrypt.genSaltSync(6));
 };
 
-const User = model("user", userSchema);
-
-module.exports = {
-  User,
-  schemas,
+userSchema.methods.validPassword = function (password) {
+  return bCrypt.compareSync(password, this.password);
 };
+
+const User = mongoose.model("user", userSchema);
+
+module.exports = User;

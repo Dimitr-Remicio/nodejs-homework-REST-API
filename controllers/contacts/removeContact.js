@@ -1,7 +1,7 @@
 const { basedir } = global;
-const { Contact } = require(`${basedir}/models/contact`);
-const { createError } = require(`${basedir}/helpers`);
-
+const { Contact } = require('../../models/contact');
+const { createError } = require('../../helpers');
+require("dotenv").config();
 const removeContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
