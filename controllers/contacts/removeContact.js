@@ -1,11 +1,12 @@
-const { basedir } = global;
-const { Contact } = require('../../models/contact');
+// const { basedir } = global;
+const ContactModel = require('../../models/contact');
 const { createError } = require('../../helpers');
 require("dotenv").config();
+
 const removeContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await Contact.findByIdAndRemove(contactId);
+    const result = await ContactModel.findByIdAndRemove(contactId);
 
     if (!result) {
       throw createError(404);

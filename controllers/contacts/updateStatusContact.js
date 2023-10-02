@@ -1,5 +1,5 @@
-const { basedir } = global;
-const { Contact, schemas } = require('../../models/contact');
+// const { basedir } = global;
+const { ContactModel, schemas } = require('../../models/contact');
 const { createError } = require('../../helpers');
 require("dotenv").config();
 
@@ -12,7 +12,7 @@ const updateStatusContact = async (req, res, next) => {
     }
 
     const { contactId } = req.params;
-    const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    const result = await ContactModel.findByIdAndUpdate(contactId, req.body, {
       new: true,
     });
 

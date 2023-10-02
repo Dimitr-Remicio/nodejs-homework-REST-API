@@ -1,12 +1,11 @@
-const { basedir } = global;
-const { Contact } = require('../../models/contact');
+const ContactModel = require('../../models/contact');
 // const { createError } = require(`${basedir}/helpers`);
 
 require("dotenv").config();
 const getContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await Contact.findById(contactId);
+    const result = await ContactModel.findById(contactId);
 
     if (!result) {
       return res.status(404).json({ message: "Not found" });

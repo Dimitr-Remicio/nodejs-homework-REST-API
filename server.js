@@ -1,9 +1,8 @@
-// const { basedir } = global;
 const express = require("express");
 const cors = require("cors");
-const association = require('./db/association');
+const association = require("./db/association");
 require("dotenv").config();
-const routerApi = require('./api/contacts');
+const routerApi = require("./routes/api/contacts");
 
 const app = express();
 

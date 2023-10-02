@@ -1,7 +1,5 @@
-const { basedir } = global;
-const { User, schemas } = require(`${basedir}/models/user`);
-
-const { createError } = require(`${basedir}/helpers`);
+const { User, schemas } = require("../../models/user");
+const { createError } = require("../../helpers");
 
 const updateUserSubscription = async (req, res) => {
   const { error } = schemas.updateSubscription.validate(req.body);

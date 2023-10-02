@@ -1,35 +1,33 @@
-const bcrypt = require("bcryptjs");
+const User = require("../../models/user");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const secret = process.env.SECRET_KEY;
 
-const { basedir } = global;
-const { User, schemas } = require(`${basedir}/models/user`);
-const { createError } = require(`${basedir}/helpers`);
-
-const { SECRET_KEY } = process.env;
-
-const login = async (req, res) => {
-  const { error } = schemas.register.validate(req.body);
-  if (error) {
-    throw createError(400, error.message);
-  }
-
+const login = async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  if (!user) {
-    throw createError(401, "Email or password is wrong");
+
+  if (!user || !user.validPassword(password)) {
+    return res.status(400).json({
+      status: "error",
+      code: 400,
+      message: "Incorrect login or password",
+      data: "Bad request",
+    });
   }
-  const comparePassword = await bcrypt.compare(password, user.password);
-  if (!comparePassword) {
-    throw createError(401, "Email or password is wrong");
-  }
+
   const payload = {
-    id: user._id,
+    id: user.id,
+    username: user.username,
   };
 
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
-  await User.findByIdAndUpdate(user._id, { token });
+  const token = jwt.sign(payload, secret, { expiresIn: "1h" });
   res.json({
-    token,
+    status: "success",
+    code: 200,
+    data: {
+      token,
+    },
   });
 };
 

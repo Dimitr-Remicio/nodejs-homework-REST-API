@@ -1,11 +1,11 @@
-const { basedir } = global;
-const { Contact } = require('../../models/contact');
+
+const ContactModel = require('../../models/contact');
 const { createError } = require('../../helpers');
 require("dotenv").config();
 const updateContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await Contact.findByIdAndUpdate(contactId, req.body, { new: true });
+    const result = await ContactModel.findByIdAndUpdate(contactId, req.body, { new: true });
 
     if (!result) {
       throw createError(404);
