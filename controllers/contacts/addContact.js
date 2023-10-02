@@ -1,19 +1,29 @@
-const { basedir } = global;
-const { Contact, schemas } = require(`${basedir}/models/contact`);
-const { createError } = require(`${basedir}/helpers`);
+const Contact = require("../../models/contact");
+require("dotenv").config();
 
 const addContact = async (req, res, next) => {
   try {
-    const { error } = schemas.add.validate(req.body);
-
-    if (error) {
-      throw createError(404, "missing required name");
+    const { name, email, phone, favorite } = req.body;
+    if (!name || !email || !phone) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const result = await Contact.create(req.body);
-    res.status(201).send(result);
+    const owner = req.user.id;
 
+    const newContact = new Contact({
+      name,
+      email,
+      phone,
+      favorite: favorite || false,
+      owner: owner,
+    });
+
+    const savedContact = await newContact.save();
+    res.status(201).json(savedContact.toJSON({ select: "-__v" }));
   } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
     next(error);
   }
 };

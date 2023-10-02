@@ -1,42 +1,38 @@
-const { Schema, model } = require('mongoose');
-const Joi = require('joi');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const contactSchema = new Schema({
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+const phoneRegex = /^\d{10}$/;
+
+const contactSchema = new Schema(
+  {
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
     name: {
-        type: String,
-        required: [true, 'Set name for contact'],
+      type: String,
+      required: [true, "Set name for contact"],
     },
     email: {
-        type: String,
+      type: String,
+      required: true,
+      match: [emailRegex, "Invalid email format"],
     },
     phone: {
-        type: String,
+      type: String,
+      required: true,
+      match: [phoneRegex, "Invalid phone number format"],
     },
-    favorite: {
-        type: Boolean,
-        default: false,
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
-}, { versionKey: false, timestamps: true })
+  },
+  { versionKey: false }
+);
 
-const Contact = model('contact', contactSchema);
+const Contact = mongoose.model("contact", contactSchema);
 
-const contactAddSchema = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().required(),
-    phone: Joi.string().required(),
-    favorite: Joi.boolean(),
-})
-    
-const updateFavoriteSchema = Joi.object({
-    favorite: Joi.bool().required(),
-});
-
-const schemas = {
-    add: contactAddSchema,
-    updateFavorite: updateFavoriteSchema,
-}
-
-module.exports = {
-    Contact,
-    schemas
-};
+module.exports = Contact;
