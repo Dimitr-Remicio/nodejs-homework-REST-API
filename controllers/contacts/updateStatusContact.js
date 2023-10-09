@@ -1,5 +1,5 @@
 // const { basedir } = global;
-const { ContactModel, schemas } = require('../../models/contact');
+const { ContactModel, schemas } = require('../../schemas/contact');
 const { createError } = require('../../helpers');
 require("dotenv").config();
 

@@ -1,5 +1,5 @@
 
-const ContactModel = require('../../models/contact');
+const ContactModel = require('../../schemas/contact');
 const { createError } = require('../../helpers');
 require("dotenv").config();
 const updateContactById = async (req, res, next) => {

@@ -1,4 +1,4 @@
-const { User, schemas } = require("../../models/user");
+const { User, schemas } = require("../../schemas/user");
 const { createError } = require("../../helpers");
 
 const updateUserSubscription = async (req, res) => {

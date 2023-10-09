@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 // const { basedir } = global;
-const { User, schemas } = require("../../models/user");
+const { User, schemas } = require("../../schemas/user");
 const { createError } = require("../../helpers");
 
 const register = async (req, res) => {
