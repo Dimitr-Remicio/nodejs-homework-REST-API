@@ -1,8 +1,9 @@
-const User = require("../../models/user");
+const User = require("../../schemas/user");
 require("dotenv").config();
+const gravatar = require("gravatar");
 
 const register = async (req, res, next) => {
-  const { username, email, password, subscription } = req.body; 
+  const { username, email, password, subscription, token } = req.body; 
   
   try {
     const user = await User.findOne({ email });
@@ -16,7 +17,8 @@ const register = async (req, res, next) => {
       });
     }
 
-    const newUser = new User({ username, email, subscription }); 
+    const avatarURL = gravatar.url(email);
+    const newUser = new User({ username, email, subscription, token, avatarURL }); 
     newUser.setPassword(password);
     await newUser.save();
 
@@ -24,12 +26,21 @@ const register = async (req, res, next) => {
       status: "success",
       code: 201,
       data: {
+        user: {
+          username,
+          email,
+          avatarURL,
+        },
         message: "Registration successful",
       },
     });
   } catch (error) {
     next(error);
   }
+
+
+
+  
 };
 
 module.exports = register;

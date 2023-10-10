@@ -1,4 +1,4 @@
-const ContactModel = require("../../models/contact")
+const ContactModel = require("../../schemas/contact")
 require("dotenv").config();
 
 

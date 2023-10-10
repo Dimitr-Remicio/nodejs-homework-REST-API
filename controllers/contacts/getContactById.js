@@ -1,4 +1,4 @@
-const ContactModel = require('../../models/contact');
+const ContactModel = require('../../schemas/contact');
 // const { createError } = require(`${basedir}/helpers`);
 
 require("dotenv").config();

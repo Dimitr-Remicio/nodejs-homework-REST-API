@@ -3,8 +3,10 @@ const express = require("express");
 const ctrl = require(`../../controllers/contacts`);
 const ctrlU = require(`../../controllers/users`);
 
+const updateAvatar = require('../../controllers/avatar/updateAvatar');
+
 const { ctrlWrapper } = require('../../helpers');
-const { auth } = require('../../middlewares');
+const { auth, upload } = require('../../middlewares');
 
 const router = express.Router();
 const invalidatedTokens = new Set();
@@ -41,8 +43,14 @@ const logout = (req, res, next) => {
 
 router.post("/users/signup", ctrlWrapper(ctrlU.signup));
 router.post("/users/login", ctrlWrapper(ctrlU.login));
-router.get("/users/current", validToken, auth, ctrlWrapper(ctrlU.me));
 router.post("/users/logout", validToken, auth, logout);
+router.get("/users/current", validToken, auth, ctrlWrapper(ctrlU.me));
+
+router.post("/upload-avatar", upload.single("avatar"), (req, res) => {
+  res.status(200).json({ message: "Archivo subido exitosamente a la carpeta temporal" });
+});
+
+router.patch("/users/avatars",validToken, auth, upload.single("avatar"), ctrlWrapper(updateAvatar));
 
 router.get("/contacts", validToken, auth, ctrlWrapper(ctrl.userAllContacts));
 router.get("/contacts/:contactId", validToken, auth, ctrlWrapper(ctrl.getContactById));

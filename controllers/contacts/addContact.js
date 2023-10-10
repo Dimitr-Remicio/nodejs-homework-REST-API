@@ -1,4 +1,4 @@
-const Contact = require("../../models/contact");
+const Contact = require("../../schemas/contact");
 require("dotenv").config();
 
 const addContact = async (req, res, next) => {
