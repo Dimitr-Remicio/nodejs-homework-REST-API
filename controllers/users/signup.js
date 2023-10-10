@@ -26,12 +26,21 @@ const register = async (req, res, next) => {
       status: "success",
       code: 201,
       data: {
+        user: {
+          username,
+          email,
+          avatarURL,
+        },
         message: "Registration successful",
       },
     });
   } catch (error) {
     next(error);
   }
+
+
+
+  
 };
 
 module.exports = register;
