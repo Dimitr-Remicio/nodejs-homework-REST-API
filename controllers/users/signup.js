@@ -1,26 +1,35 @@
 const User = require("../../schemas/user");
-require("dotenv").config();
+const { Conflict, BadRequest } = require("http-errors");
 const gravatar = require("gravatar");
+const emailService = require("../../config/emailService");
+const tokenService = require("../../config/tokenService");
 
 const register = async (req, res, next) => {
-  const { username, email, password, subscription, token } = req.body; 
-  
+  const { username, email, password, subscription } = req.body;
+
   try {
     const user = await User.findOne({ email });
 
     if (user) {
-      return res.status(409).json({
-        status: "error",
-        code: 409,
-        message: "Email is already in use",
-        data: "Error Conflict",
-      });
+      throw new Conflict("Email is already in use");
     }
 
     const avatarURL = gravatar.url(email);
-    const newUser = new User({ username, email, subscription, token, avatarURL }); 
+
+    const verificationToken = tokenService.generateVerificationToken();
+
+    const newUser = new User({
+      username,
+      email,
+      subscription,
+      avatarURL,
+      verificationToken,
+    });
+
     newUser.setPassword(password);
     await newUser.save();
+
+    await emailService.sendVerificationEmail(email, verificationToken);
 
     res.status(201).json({
       status: "success",
@@ -30,17 +39,16 @@ const register = async (req, res, next) => {
           username,
           email,
           avatarURL,
+          verificationToken,
         },
-        message: "Registration successful",
       },
     });
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return next(new BadRequest("Validation error"));
+    }
     next(error);
   }
-
-
-
-  
 };
 
 module.exports = register;
