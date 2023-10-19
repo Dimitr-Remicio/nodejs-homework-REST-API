@@ -1,17 +1,22 @@
-const register = require("./register");
 const login = require("./login");
-const me = require("./me");
 const signup = require("./signup");
+
 const getCurrent = require("./getCurrent");
+const me = require("./me");
+
 const updateAvatar = require("./updateAvatar");
 const updateUserSubscription = require("./updateUserSubscription");
 
+const emailVerify = require("./emailVerify");
+const resendVerificationEmail = require("./resendEmail");
+
 module.exports = {
-  register,
   login,
   me,
   signup,
   getCurrent,
   updateAvatar,
   updateUserSubscription,
+  emailVerify,
+  resendVerificationEmail,
 };
